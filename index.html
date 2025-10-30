@@ -90,29 +90,21 @@ body { display:flex; justify-content:center; padding:20px; background:#f0f0f0; h
       <div class="tile">메뉴 6</div>
     </div>
 
-    <!-- Bottom Frame -->
-    <div class="bottom-frame">
-      <div class="selected-items" id="selected-items">선택한 메뉴 없음</div>
-      <div class="bottom-buttons">
-        <div class="card-slot" id="card-slot">카드</div>
-        <div class="qr-reader" id="qr-reader">QR</div>
-        <div class="receipt-slot" id="receipt-slot">영수증</div>
-        <div class="height-controls">
-          <div class="height-btn" id="height-up">▲</div>
-          <div class="height-btn" id="height-down">▼</div>
-        </div>
-      </div>
-      <div class="stand-visual" id="stand-visual"></div>
+<!-- Bottom Frame -->
+<div class="bottom-frame">
+  <div class="selected-items" id="selected-items">선택한 메뉴 없음</div>
+  <div class="bottom-buttons">
+    <div class="card-slot" id="card-slot">카드</div>
+    <div class="qr-reader" id="qr-reader">QR</div>
+    <div class="receipt-slot" id="receipt-slot">영수증</div>
+    <div class="height-controls">
+      <div class="height-btn" id="height-up">▲</div>
+      <div class="height-btn" id="height-down">▼</div>
     </div>
   </div>
+  <!-- 스탠드 시각화 -->
+  <div class="stand-visual" id="stand-visual"></div>
 </div>
-
-<script>
-const selectedItems = document.getElementById('selected-items');
-const stand = document.getElementById('stand');
-const standVisual = document.getElementById('stand-visual');
-let fontSize = 14;
-let heightInterval;
 
 // Tile selection / 장바구니 추가
 document.querySelectorAll('.tile').forEach(tile=>{

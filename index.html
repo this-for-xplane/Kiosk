@@ -45,10 +45,29 @@ body { display:flex; justify-content:center; align-items:flex-start; height:100v
 
 /* Card Slot */
 .card-slot { flex:1; background:#888; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; position:relative; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.2); user-select:none; overflow:hidden; }
-.card-slot::before { content:''; position:absolute; top:55%; left:50%; width:40%; height:6px; background:#666; border-radius:3px; transform:translateX(-50%); }
+.card-slot::before {
+  content:'';
+  position:absolute;
+  top:55%;
+  left:50%;
+  width:60%;   /* 더 길게 */
+  height:6px;  /* 더 얇게 */
+  background:#666;
+  border-radius:3px;
+  transform:translateX(-50%);
+}
 
 /* Card inside */
-.card-insert { position:absolute; width:80%; height:25px; background:green; border-radius:4px; top:-30px; left:10%; transition: transform 0.5s; transform: translateY(0); }
+.card-insert {
+  position:absolute;
+  width:80%;
+  height:25px;
+  background:green;
+  border-radius:4px;
+  top:-30px;
+  left:10%;
+  transition: top 0.5s ease; /* ATM 스타일 자연스러운 애니메이션 */
+}
 
 /* QR Reader */
 .qr-reader { flex:1; background:red; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; position:relative; cursor:pointer; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.5); user-select:none;}
@@ -57,7 +76,16 @@ body { display:flex; justify-content:center; align-items:flex-start; height:100v
 
 /* Receipt Slot */
 .receipt-slot { flex:1; background:#666; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:flex-start; cursor:pointer; box-shadow: inset 0 -4px 6px rgba(0,0,0,0.5); position:relative; overflow:hidden; user-select:none;}
-.receipt-insert { position:absolute; width:70%; height:20px; background:#ccc; top:-25px; border-radius:3px; left:15%; transition: transform 0.5s; transform: translateY(0); }
+.receipt-insert {
+  position:absolute;
+  width:70%;
+  height:20px;
+  background:#ccc;
+  top:-25px;
+  border-radius:3px;
+  left:15%;
+  transition: top 0.5s ease; /* 자연스러운 애니메이션 */
+}
 
 /* Height Controls */
 .height-controls { display:flex; flex-direction:column; gap:5px; margin-left:5px; }
@@ -116,15 +144,4 @@ body { display:flex; justify-content:center; align-items:flex-start; height:100v
         </div>
         <div class="height-controls">
           <div class="height-btn" id="height-up">▲</div>
-          <div class="height-btn" id="height-down">▼</div>
-        </div>
-      </div>
-      <div class="stand-visual" id="stand-visual"></div>
-    </div>
-  </div>
-</div>
-
-<script>
-const selectedItems = document.getElementById('selected-items');
-const stand = document.getElementById('stand');
-const standVisual = document.getElementById('stand
+          <div class="height-btn" id="height

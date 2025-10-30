@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interactive Kiosk</title>
+<title>Kiosk Simulator</title>
 <style>
 * { box-sizing:border-box; margin:0; padding:0; font-family:'Arial',sans-serif;}
-body { display:flex; justify-content:center; padding:20px; background:#f0f0f0; height:100vh; align-items:flex-start;}
+body { display:flex; justify-content:center; padding:20px; background:#f0f0f0; height:100vh; align-items:flex-start; }
 
-.kiosk-container { display:flex; flex-direction:column; align-items:center; }
+.kiosk-container { display:flex; flex-direction:column; align-items:center; position:relative; }
 
 /* Stand (screen wrapper) */
 .stand {
@@ -34,28 +34,37 @@ body { display:flex; justify-content:center; padding:20px; background:#f0f0f0; h
 .tile:hover { transform: translateY(-3px); box-shadow:0 8px 15px rgba(0,0,0,0.2); }
 
 /* Bottom Frame */
-.bottom-frame { background:#ccc; display:flex; flex-direction:column; gap:8px; padding:10px; margin-top:10px; border-top:4px solid #aaa; border-radius:0 0 20px 20px; position:relative;}
+.bottom-frame { display:flex; flex-direction:column; gap:8px; margin-top:10px; border-radius:0 0 20px 20px; position:relative; }
 
 /* Selected Items */
 .selected-items { display:flex; gap:5px; flex-wrap:wrap; min-height:50px; padding:5px; background:#ddd; border-radius:10px; box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2); font-size:14px; }
 
-/* QR Reader */
-.qr-reader { flex:1; height:50px; background:#222; border-radius:10px; position:relative; display:flex; justify-content:center; align-items:center; color:white; font-weight:bold; box-shadow: inset 0 -3px 5px rgba(255,0,0,0.5); cursor:pointer; margin-right:5px;}
-.qr-reader::after { content:''; position:absolute; top:10px; left:10px; width:10px; height:10px; background:red; border-radius:50%; animation: blink 1s infinite;}
+/* Bottom buttons layout */
+.bottom-buttons { display:flex; justify-content:space-between; gap:5px; padding:10px; background:#ccc; border-top:4px solid #aaa; border-radius:0 0 20px 20px; }
+
+/* Card Slot (왼쪽) */
+.card-slot { flex:1; background:#2c7; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.5); }
+
+/* QR Reader (중간) */
+.qr-reader { flex:1; background:red; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; position:relative; cursor:pointer; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.5); }
+.qr-reader::after { content:''; position:absolute; top:10px; left:10px; width:10px; height:10px; background:white; border-radius:50%; animation: blink 1s infinite;}
 @keyframes blink { 0%,50%,100% {opacity:1;} 25%,75% {opacity:0;} }
 
-/* Receipt Slot */
-.receipt-slot { flex:1; height:50px; background:#ddd; border-radius:6px; display:flex; justify-content:center; align-items:center; position:relative; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.2); margin:0 5px;}
-.receipt-slot::before { content:''; position:absolute; top:5px; left:10%; width:80%; height:4px; background:#bbb; border-radius:2px; }
+/* Receipt Slot (오른쪽, 검은 배경) */
+.receipt-slot { flex:1; background:#111; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; box-shadow: inset 0 -3px 5px rgba(255,255,255,0.2); }
 
-/* Card Payment Button */
-.card-btn { flex:0 0 60px; height:50px; background:green; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; box-shadow: 0 4px 0 #333, 0 6px 10px rgba(0,0,0,0.2); transition:0.1s;}
-.card-btn:active { transform: translateY(4px); box-shadow:0 0px 0 #333,0 6px 10px rgba(0,0,0,0.2); }
-
-/* Height Buttons */
+/* Height Controls */
 .height-controls { display:flex; flex-direction:column; gap:5px; margin-left:5px; }
 .height-btn { width:50px; height:25px; background:#555; border-radius:6px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; box-shadow: 0 4px 0 #333, 0 6px 10px rgba(0,0,0,0.2); transition:0.1s;}
 .height-btn:active { transform: translateY(4px); box-shadow:0 0px 0 #333,0 6px 10px rgba(0,0,0,0.2); }
+
+/* Font size controls */
+.font-controls { display:flex; gap:5px; margin-left:10px; }
+.font-btn { width:30px; height:30px; background:#555; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 0 #333; transition:0.1s; }
+.font-btn:active { transform: translateY(4px); box-shadow:0 0px 0 #333; }
+
+/* Stand visual */
+.stand-visual { width:60px; height:20px; background:#888; margin-top:5px; border-radius:5px; transition: transform 0.05s linear; }
 </style>
 </head>
 <body>
@@ -65,7 +74,10 @@ body { display:flex; justify-content:center; padding:20px; background:#f0f0f0; h
     <!-- Top -->
     <div class="top-bar">
       <button id="language-btn">🌐 언어</button>
-      <button id="font-btn">글자 크기</button>
+      <div class="font-controls">
+        <button class="font-btn" id="font-up">+</button>
+        <button class="font-btn" id="font-down">-</button>
+      </div>
     </div>
 
     <!-- Main Screen -->
@@ -81,15 +93,16 @@ body { display:flex; justify-content:center; padding:20px; background:#f0f0f0; h
     <!-- Bottom Frame -->
     <div class="bottom-frame">
       <div class="selected-items" id="selected-items">선택한 메뉴 없음</div>
-      <div style="display:flex; justify-content:space-between; gap:5px;">
-        <div class="qr-reader">QR/쿠폰</div>
-        <div class="receipt-slot">영수증</div>
-        <div class="card-btn" id="card-pay">카드</div>
+      <div class="bottom-buttons">
+        <div class="card-slot" id="card-slot">카드</div>
+        <div class="qr-reader" id="qr-reader">QR</div>
+        <div class="receipt-slot" id="receipt-slot">영수증</div>
         <div class="height-controls">
           <div class="height-btn" id="height-up">▲</div>
           <div class="height-btn" id="height-down">▼</div>
         </div>
       </div>
+      <div class="stand-visual" id="stand-visual"></div>
     </div>
   </div>
 </div>
@@ -97,17 +110,10 @@ body { display:flex; justify-content:center; padding:20px; background:#f0f0f0; h
 <script>
 const selectedItems = document.getElementById('selected-items');
 const stand = document.getElementById('stand');
+const standVisual = document.getElementById('stand-visual');
 let fontSize = 14;
 let heightInterval;
-
-// Top buttons
-document.getElementById('language-btn').addEventListener('click', ()=>alert('언어 선택'));
-document.getElementById('font-btn').addEventListener('click', ()=>{
-  fontSize += 2;
-  if(fontSize > 24) fontSize = 14;
-  document.querySelectorAll('.tile').forEach(t=>t.style.fontSize = fontSize+'px');
-  document.getElementById('selected-items').style.fontSize = fontSize+'px';
-});
+let standPos = 0; // 시각적 스탠드 위치
 
 // Tile selection / 장바구니 추가
 document.querySelectorAll('.tile').forEach(tile=>{
@@ -130,13 +136,26 @@ document.querySelectorAll('.tile').forEach(tile=>{
   });
 });
 
+// Font controls
+document.getElementById('font-up').addEventListener('click', ()=>{
+  fontSize += 2; if(fontSize>24) fontSize=24;
+  document.querySelectorAll('.tile').forEach(t=>t.style.fontSize=fontSize+'px');
+  selectedItems.style.fontSize = fontSize+'px';
+});
+document.getElementById('font-down').addEventListener('click', ()=>{
+  fontSize -= 2; if(fontSize<10) fontSize=10;
+  document.querySelectorAll('.tile').forEach(t=>t.style.fontSize=fontSize+'px');
+  selectedItems.style.fontSize = fontSize+'px';
+});
+
 // Height control
 const moveStand = (direction)=>{
   let currentY = parseInt(stand.style.transform.replace('translateY(','').replace('px)','')) || 0;
-  currentY += direction*2;
-  if(currentY>50) currentY=50; // 최대 높이
-  if(currentY<-50) currentY=-50; // 최소 높이
+  currentY += direction*5;
+  if(currentY>100) currentY=100;
+  if(currentY<-50) currentY=-50;
   stand.style.transform = `translateY(${currentY}px)`;
+  standVisual.style.transform = `translateY(${currentY}px)`; // 스탠드 시각화
 };
 
 document.getElementById('height-up').addEventListener('mousedown', ()=>{ heightInterval = setInterval(()=>moveStand(-1),10); });
@@ -148,9 +167,12 @@ document.getElementById('height-down').addEventListener('mouseup', ()=>clearInte
 document.getElementById('height-down').addEventListener('mouseleave', ()=>clearInterval(heightInterval));
 
 // Bottom buttons
-document.querySelector('.qr-reader').addEventListener('click', ()=>alert('QR/쿠폰 인식'));
-document.querySelector('.receipt-slot').addEventListener('click', ()=>alert('영수증 출력'));
-document.getElementById('card-pay').addEventListener('click', ()=>alert('카드 결제'));
+document.getElementById('card-slot').addEventListener('click', ()=>alert('카드 결제'));
+document.getElementById('qr-reader').addEventListener('click', ()=>alert('QR/쿠폰 인식'));
+document.getElementById('receipt-slot').addEventListener('click', ()=>alert('영수증 출력'));
+
+// Top buttons
+document.getElementById('language-btn').addEventListener('click', ()=>alert('언어 선택'));
 </script>
 
 </body>

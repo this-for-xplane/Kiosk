@@ -154,14 +154,14 @@
     background: linear-gradient(135deg, #b2b2b2, #e0e0e0);
     border-radius: 6px;
     position: absolute;
-    bottom: 65px;
+    bottom: -60px;
     left: 50%;
     transform: translateX(-50%);
-    transition: transform 0.5s ease-in-out;
+    transition: bottom 0.5s;
   }
 
   .card.inserted {
-    transform: translate(-50%, 80px);
+    bottom: 5px;
   }
 
   /* 영수증 */
@@ -269,17 +269,9 @@
     });
   });
 
-  // 카드 삽입/제거 (ATM 애니메이션 느낌)
-  let inserted = false;
+  // 카드 삽입/제거
   card.addEventListener("click", () => {
-    inserted = !inserted;
-    if (inserted) {
-      card.style.transition = "transform 0.4s ease-in";
-      card.style.transform = "translate(-50%, 80px)";
-    } else {
-      card.style.transition = "transform 0.4s ease-out";
-      card.style.transform = "translate(-50%, 0)";
-    }
+    card.classList.toggle("inserted");
   });
 
   // 영수증 출력

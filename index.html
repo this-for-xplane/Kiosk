@@ -30,7 +30,6 @@
     flex-direction: column;
     overflow: hidden;
     position: relative;
-    transition: height 0.3s;
   }
 
   /* 상단 바 */
@@ -125,15 +124,14 @@
     align-items: flex-end;
     padding-bottom: 15px;
     position: relative;
-    perspective: 600px;
   }
 
   .slot {
     width: 100px;
     height: 60px;
-    background: #d4d4d4;
+    background: #ccc;
     border-radius: 8px;
-    box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -149,37 +147,32 @@
     width: 100%;
   }
 
-  /* 카드 (ATM 스타일) */
+  /* 카드 */
   .card {
     width: 80px;
     height: 50px;
     background: linear-gradient(135deg, #b2b2b2, #e0e0e0);
     border-radius: 6px;
     position: absolute;
-    bottom: -60px;
-    transition: bottom 0.6s ease, transform 0.6s ease;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+    bottom: 65px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: transform 0.5s ease-in-out;
   }
 
   .card.inserted {
-    bottom: 20px;
-    transform: translateY(15px) rotateX(10deg);
+    transform: translate(-50%, 80px);
   }
 
-  /* 영수증 슬롯 (음각 박스) */
-  .receipt-slot {
-    background: #c8c8c8;
-    box-shadow: inset 0 3px 6px rgba(0,0,0,0.6);
-  }
-
+  /* 영수증 */
   .receipt {
     width: 60px;
     height: 0;
-    background: #222;
+    background: #444;
     border-radius: 3px;
     position: absolute;
     bottom: 0;
-    transition: height 0.8s ease-in-out;
+    transition: height 1s;
   }
 
   .receipt.out {
@@ -210,6 +203,7 @@
   .control-btn button:hover {
     background: #777;
   }
+
 </style>
 </head>
 <body>
@@ -275,12 +269,20 @@
     });
   });
 
-  // 카드 삽입/제거 (ATM 스타일)
+  // 카드 삽입/제거 (ATM 애니메이션 느낌)
+  let inserted = false;
   card.addEventListener("click", () => {
-    card.classList.toggle("inserted");
+    inserted = !inserted;
+    if (inserted) {
+      card.style.transition = "transform 0.4s ease-in";
+      card.style.transform = "translate(-50%, 80px)";
+    } else {
+      card.style.transition = "transform 0.4s ease-out";
+      card.style.transform = "translate(-50%, 0)";
+    }
   });
 
-  // 영수증 출력 (이이잉 효과)
+  // 영수증 출력
   const receiptSlot = document.querySelector(".receipt-slot");
   receiptSlot.addEventListener("click", () => {
     receipt.classList.add("out");

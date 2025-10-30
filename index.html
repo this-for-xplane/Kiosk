@@ -42,8 +42,8 @@ body { display:flex; justify-content:center; padding:20px; background:#f0f0f0; h
 /* Bottom buttons layout */
 .bottom-buttons { display:flex; justify-content:space-between; gap:5px; padding:10px; background:#ccc; border-top:4px solid #aaa; border-radius:0 0 20px 20px; }
 
-/* Card Slot (왼쪽) */
-.card-slot { flex:1; background:#2c7; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.5); }
+/* Card Slot (왼쪽, 이전 디자인 톤) */
+.card-slot { flex:1; background:#333; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.5); }
 
 /* QR Reader (중간) */
 .qr-reader { flex:1; background:red; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; position:relative; cursor:pointer; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.5); }
@@ -113,7 +113,6 @@ const stand = document.getElementById('stand');
 const standVisual = document.getElementById('stand-visual');
 let fontSize = 14;
 let heightInterval;
-let standPos = 0; // 시각적 스탠드 위치
 
 // Tile selection / 장바구니 추가
 document.querySelectorAll('.tile').forEach(tile=>{
@@ -149,13 +148,13 @@ document.getElementById('font-down').addEventListener('click', ()=>{
 });
 
 // Height control
+let standPos = 0;
 const moveStand = (direction)=>{
-  let currentY = parseInt(stand.style.transform.replace('translateY(','').replace('px)','')) || 0;
-  currentY += direction*5;
-  if(currentY>100) currentY=100;
-  if(currentY<-50) currentY=-50;
-  stand.style.transform = `translateY(${currentY}px)`;
-  standVisual.style.transform = `translateY(${currentY}px)`; // 스탠드 시각화
+  standPos += direction*5;
+  if(standPos>100) standPos=100;
+  if(standPos<-50) standPos=-50;
+  stand.style.transform = `translateY(${standPos}px)`;
+  standVisual.style.transform = `translateY(${standPos}px)`;
 };
 
 document.getElementById('height-up').addEventListener('mousedown', ()=>{ heightInterval = setInterval(()=>moveStand(-1),10); });

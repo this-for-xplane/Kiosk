@@ -10,7 +10,7 @@ body { display:flex; justify-content:center; align-items:flex-start; height:100v
 
 .kiosk-container { display:flex; flex-direction:column; align-items:center; position:relative; }
 
-/* Stand (screen wrapper) */
+/* Stand */
 .stand {
   background:#fff;
   border-radius:25px;
@@ -44,18 +44,11 @@ body { display:flex; justify-content:center; align-items:flex-start; height:100v
 .bottom-buttons { display:flex; justify-content:space-between; gap:5px; padding:10px; background:#ccc; border-top:4px solid #aaa; border-radius:0 0 20px 20px; user-select:none; }
 
 /* Card Slot */
-.card-slot { flex:1; background:#888; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; position:relative; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.2); user-select:none; }
-.card-slot::before {
-  content:'';
-  position:absolute;
-  top:60%; /* 아래로 내림 */
-  left:50%;
-  width:60%;
-  height:12px;
-  background:#666;
-  border-radius:3px;
-  transform:translateX(-50%);
-}
+.card-slot { flex:1; background:#888; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; position:relative; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.2); user-select:none; overflow:hidden; }
+.card-slot::before { content:''; position:absolute; top:60%; left:50%; width:60%; height:12px; background:#666; border-radius:3px; transform:translateX(-50%); }
+
+/* Card inside */
+.card-insert { position:absolute; width:80%; height:25px; background:green; border-radius:4px; top:-30px; left:10%; transition: top 0.3s; }
 
 /* QR Reader */
 .qr-reader { flex:1; background:red; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; position:relative; cursor:pointer; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.5); user-select:none;}
@@ -63,9 +56,8 @@ body { display:flex; justify-content:center; align-items:flex-start; height:100v
 @keyframes blink { 0%,50%,100% {opacity:1;} 25%,75% {opacity:0;} }
 
 /* Receipt Slot */
-.receipt-slot { flex:1; background:#666; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; box-shadow: inset 0 -4px 6px rgba(0,0,0,0.5); user-select:none; }
-/* 막대 제거, 단순 음각 느낌 */
-.receipt-slot::before { content:''; display:none; }
+.receipt-slot { flex:1; background:#666; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:flex-start; cursor:pointer; box-shadow: inset 0 -4px 6px rgba(0,0,0,0.5); position:relative; overflow:hidden; user-select:none;}
+.receipt-insert { position:absolute; width:70%; height:20px; background:#ccc; top:-25px; border-radius:3px; left:15%; transition: top 0.4s; }
 
 /* Height Controls */
 .height-controls { display:flex; flex-direction:column; gap:5px; margin-left:5px; }
@@ -115,15 +107,18 @@ body { display:flex; justify-content:center; align-items:flex-start; height:100v
     <div class="bottom-frame">
       <div class="selected-items" id="selected-items">선택한 메뉴 없음</div>
       <div class="bottom-buttons">
-        <div class="card-slot" id="card-slot">카드</div>
+        <div class="card-slot" id="card-slot">카드
+          <div class="card-insert" id="card-insert"></div>
+        </div>
         <div class="qr-reader" id="qr-reader">QR</div>
-        <div class="receipt-slot" id="receipt-slot">영수증</div>
+        <div class="receipt-slot" id="receipt-slot">영수증
+          <div class="receipt-insert" id="receipt-insert"></div>
+        </div>
         <div class="height-controls">
           <div class="height-btn" id="height-up">▲</div>
           <div class="height-btn" id="height-down">▼</div>
         </div>
       </div>
-      <!-- 스탠드 시각화 -->
       <div class="stand-visual" id="stand-visual"></div>
     </div>
   </div>
@@ -187,10 +182,27 @@ document.getElementById('height-down').addEventListener('mousedown', ()=>{ heigh
 document.getElementById('height-down').addEventListener('mouseup', ()=>clearInterval(heightInterval));
 document.getElementById('height-down').addEventListener('mouseleave', ()=>clearInterval(heightInterval));
 
+// Card animation
+let cardInserted = false;
+const cardInsertEl = document.getElementById('card-insert');
+document.getElementById('card-slot').addEventListener('click', ()=>{
+  if(!cardInserted){
+    cardInsertEl.style.top = '35%'; // 들어감
+  } else {
+    cardInsertEl.style.top = '-30px'; // 빠짐
+  }
+  cardInserted = !cardInserted;
+});
+
+// Receipt animation
+const receiptEl = document.getElementById('receipt-insert');
+document.getElementById('receipt-slot').addEventListener('click', ()=>{
+  receiptEl.style.top = '30%';
+  setTimeout(()=>{ receiptEl.style.top = '-25px'; }, 1000);
+});
+
 // Bottom buttons
-document.getElementById('card-slot').addEventListener('click', ()=>alert('카드 결제'));
 document.getElementById('qr-reader').addEventListener('click', ()=>alert('QR/쿠폰 인식'));
-document.getElementById('receipt-slot').addEventListener('click', ()=>alert('영수증 출력'));
 
 // Top buttons
 document.getElementById('language-btn').addEventListener('click', ()=>alert('언어 선택'));

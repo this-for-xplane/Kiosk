@@ -6,7 +6,7 @@
 <title>Kiosk Simulator</title>
 <style>
 * { box-sizing:border-box; margin:0; padding:0; font-family:'Arial',sans-serif; user-select:none; }
-body { display:flex; justify-content:center; padding:20px; background:#f0f0f0; height:100vh; align-items:flex-start; }
+body { display:flex; justify-content:center; align-items:flex-start; height:100vh; background:#f0f0f0; padding:20px; }
 
 .kiosk-container { display:flex; flex-direction:column; align-items:center; position:relative; }
 
@@ -21,6 +21,7 @@ body { display:flex; justify-content:center; padding:20px; background:#f0f0f0; h
   flex-direction:column;
   transform: translateY(0);
   transition: transform 0.05s linear;
+  user-select:none;
 }
 
 /* Top UI */
@@ -29,42 +30,54 @@ body { display:flex; justify-content:center; padding:20px; background:#f0f0f0; h
 .top-bar button:hover { background:#777;}
 
 /* Main Screen */
-.main-screen { background:#eaeaea; padding:10px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center;}
-.tile { flex:1 1 45%; min-width:80px; height:70px; background:#fff; border:1px solid #ccc; border-radius:12px; display:flex; justify-content:center; align-items:center; font-weight:bold; box-shadow:0 5px 10px rgba(0,0,0,0.1); cursor:pointer; transition: transform 0.15s, box-shadow 0.15s;}
+.main-screen { background:#eaeaea; padding:10px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; user-select:none;}
+.tile { flex:1 1 45%; min-width:80px; height:70px; background:#fff; border:1px solid #ccc; border-radius:12px; display:flex; justify-content:center; align-items:center; font-weight:bold; box-shadow:0 5px 10px rgba(0,0,0,0.1); cursor:pointer; transition: transform 0.15s, box-shadow 0.15s; user-select:none;}
 .tile:hover { transform: translateY(-3px); box-shadow:0 8px 15px rgba(0,0,0,0.2); }
 
 /* Bottom Frame */
-.bottom-frame { display:flex; flex-direction:column; gap:8px; margin-top:10px; border-radius:0 0 20px 20px; position:relative; }
+.bottom-frame { display:flex; flex-direction:column; gap:8px; margin-top:10px; border-radius:0 0 20px 20px; position:relative; user-select:none; }
 
 /* Selected Items */
-.selected-items { display:flex; gap:5px; flex-wrap:wrap; min-height:50px; padding:5px; background:#ddd; border-radius:10px; box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2); font-size:14px; }
+.selected-items { display:flex; gap:5px; flex-wrap:wrap; min-height:50px; padding:5px; background:#ddd; border-radius:10px; box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2); font-size:14px; user-select:none; }
 
 /* Bottom buttons layout */
-.bottom-buttons { display:flex; justify-content:space-between; gap:5px; padding:10px; background:#ccc; border-top:4px solid #aaa; border-radius:0 0 20px 20px; }
+.bottom-buttons { display:flex; justify-content:space-between; gap:5px; padding:10px; background:#ccc; border-top:4px solid #aaa; border-radius:0 0 20px 20px; user-select:none; }
 
 /* Card Slot */
-.card-slot { flex:1; background:#333; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.5); }
+.card-slot { flex:1; background:#333; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.5); position:relative; user-select:none;}
+.card-slot::after {
+  content:'';
+  position:absolute;
+  width:6px;
+  height:20px;
+  background:#aaa;
+  border-radius:3px;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+}
 
 /* QR Reader */
-.qr-reader { flex:1; background:red; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; position:relative; cursor:pointer; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.5); }
+.qr-reader { flex:1; background:red; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; position:relative; cursor:pointer; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.5); user-select:none;}
 .qr-reader::after { content:''; position:absolute; top:10px; left:10px; width:10px; height:10px; background:white; border-radius:50%; animation: blink 1s infinite;}
 @keyframes blink { 0%,50%,100% {opacity:1;} 25%,75% {opacity:0;} }
 
 /* Receipt Slot */
-.receipt-slot { flex:1; background:#111; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; box-shadow: inset 0 -3px 5px rgba(255,255,255,0.2); }
+.receipt-slot { flex:1; background:#111; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; box-shadow: inset 0 -3px 5px rgba(255,255,255,0.2); user-select:none; }
 
 /* Height Controls */
 .height-controls { display:flex; flex-direction:column; gap:5px; margin-left:5px; }
-.height-btn { width:50px; height:25px; background:#555; border-radius:6px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; box-shadow: 0 4px 0 #333, 0 6px 10px rgba(0,0,0,0.2); transition:0.1s;}
+.height-btn { width:50px; height:25px; background:#555; border-radius:6px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; box-shadow: 0 4px 0 #333, 0 6px 10px rgba(0,0,0,0.2); transition:0.1s; user-select:none;}
 .height-btn:active { transform: translateY(4px); box-shadow:0 0px 0 #333,0 6px 10px rgba(0,0,0,0.2); }
 
 /* Font size controls */
 .font-controls { display:flex; gap:5px; margin-left:10px; }
-.font-btn { width:30px; height:30px; background:#555; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 0 #333; transition:0.1s; }
+.font-btn { width:30px; height:30px; background:#555; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 0 #333; transition:0.1s; user-select:none; }
 .font-btn:active { transform: translateY(4px); box-shadow:0 0px 0 #333; }
 
 /* Stand visual */
-.stand-visual { width:100px; height:40px; background:#888; margin:10px auto 0 auto; border-radius:10px; transition: transform 0.05s linear; }
+.stand-visual { width:100px; height:40px; background:#888; margin:10px auto 0 auto; border-radius:10px; transition: transform 0.05s linear; user-select:none; }
 </style>
 </head>
 <body>

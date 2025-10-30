@@ -1,147 +1,312 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kiosk Simulator</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Self-Service Kiosk</title>
 <style>
-* { box-sizing:border-box; margin:0; padding:0; font-family:'Arial',sans-serif; user-select:none; }
-body { display:flex; justify-content:center; align-items:flex-start; height:100vh; background:#f0f0f0; padding:20px; }
+  * {
+    box-sizing: border-box;
+    user-select: none;
+  }
 
-.kiosk-container { display:flex; flex-direction:column; align-items:center; position:relative; }
+  body {
+    margin: 0;
+    background: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: "Pretendard", sans-serif;
+  }
 
-/* Stand */
-.stand {
-  background:#fff;
-  border-radius:25px;
-  width:360px;
-  box-shadow:0 15px 40px rgba(0,0,0,0.2);
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  transform: translateY(0);
-  transition: transform 0.05s linear;
-  user-select:none;
-}
+  .kiosk {
+    width: 400px;
+    height: 900px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
 
-/* Top UI */
-.top-bar { display:flex; justify-content:space-between; align-items:center; background:#222; color:white; padding:12px 15px;}
-.top-bar button { background:#555; color:white; border:none; border-radius:8px; padding:6px 10px; cursor:pointer; font-weight:bold; box-shadow:0 3px 6px rgba(0,0,0,0.3); transition:0.2s;}
-.top-bar button:hover { background:#777; }
+  /* 상단 바 */
+  .top-bar {
+    height: 50px;
+    background: #333;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    font-size: 18px;
+  }
 
-/* Main Screen */
-.main-screen { background:#eaeaea; padding:10px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; user-select:none;}
-.tile { flex:1 1 45%; min-width:80px; height:70px; background:#fff; border:1px solid #ccc; border-radius:12px; display:flex; justify-content:center; align-items:center; font-weight:bold; box-shadow:0 5px 10px rgba(0,0,0,0.1); cursor:pointer; transition: transform 0.15s, box-shadow 0.15s; user-select:none;}
-.tile:hover { transform: translateY(-3px); box-shadow:0 8px 15px rgba(0,0,0,0.2); }
+  .top-bar button {
+    background: none;
+    color: white;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+  }
 
-/* Bottom Frame */
-.bottom-frame { display:flex; flex-direction:column; gap:8px; margin-top:10px; border-radius:0 0 20px 20px; position:relative; user-select:none; }
+  .help-btn {
+    position: absolute;
+    top: 55px;
+    right: 10px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+  }
 
-/* Selected Items */
-.selected-items { display:flex; gap:5px; flex-wrap:wrap; min-height:50px; padding:5px; background:#ddd; border-radius:10px; box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2); font-size:14px; user-select:none; }
+  /* 메인 화면 */
+  .screen {
+    flex: 1;
+    background: #fafafa;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
 
-/* Bottom buttons layout */
-.bottom-buttons { display:flex; justify-content:space-between; gap:5px; padding:10px; background:#ccc; border-top:4px solid #aaa; border-radius:0 0 20px 20px; user-select:none; }
+  .menu {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
-/* Card Slot */
-.card-slot { flex:1; background:#888; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; position:relative; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.2); user-select:none; overflow:hidden; }
-.card-slot::before {
-  content:'';
-  position:absolute;
-  top:55%;
-  left:50%;
-  width:60%;   /* 더 길게 */
-  height:6px;  /* 더 얇게 */
-  background:#666;
-  border-radius:3px;
-  transform:translateX(-50%);
-}
+  .menu button {
+    width: 100px;
+    height: 80px;
+    background: #eee;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+  }
 
-/* Card inside */
-.card-insert {
-  position:absolute;
-  width:80%;
-  height:25px;
-  background:green;
-  border-radius:4px;
-  top:-30px;
-  left:10%;
-  transition: top 0.5s ease; /* ATM 스타일 자연스러운 애니메이션 */
-}
+  .menu button:hover {
+    background: #ddd;
+  }
 
-/* QR Reader */
-.qr-reader { flex:1; background:red; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; position:relative; cursor:pointer; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.5); user-select:none;}
-.qr-reader::after { content:''; position:absolute; top:10px; left:10px; width:10px; height:10px; background:white; border-radius:50%; animation: blink 1s infinite;}
-@keyframes blink { 0%,50%,100% {opacity:1;} 25%,75% {opacity:0;} }
+  .cart {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    max-height: 120px;
+    overflow-y: auto;
+    font-size: 13px;
+  }
 
-/* Receipt Slot */
-.receipt-slot { flex:1; background:#666; border-radius:8px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:flex-start; cursor:pointer; box-shadow: inset 0 -4px 6px rgba(0,0,0,0.5); position:relative; overflow:hidden; user-select:none;}
-.receipt-insert {
-  position:absolute;
-  width:70%;
-  height:20px;
-  background:#ccc;
-  top:-25px;
-  border-radius:3px;
-  left:15%;
-  transition: top 0.5s ease; /* 자연스러운 애니메이션 */
-}
+  /* 하단 패널 */
+  .bottom-panel {
+    height: 160px;
+    background: #f0f0f0;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    padding-bottom: 15px;
+    position: relative;
+  }
 
-/* Height Controls */
-.height-controls { display:flex; flex-direction:column; gap:5px; margin-left:5px; }
-.height-btn { width:50px; height:25px; background:#555; border-radius:6px; color:white; font-weight:bold; display:flex; justify-content:center; align-items:center; cursor:pointer; box-shadow: 0 4px 0 #333, 0 6px 10px rgba(0,0,0,0.2); transition:0.1s; user-select:none;}
-.height-btn:active { transform: translateY(4px); box-shadow:0 0px 0 #333,0 6px 10px rgba(0,0,0,0.2); }
+  .slot {
+    width: 100px;
+    height: 60px;
+    background: #ccc;
+    border-radius: 8px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
 
-/* Font size controls */
-.font-controls { display:flex; gap:5px; margin-left:10px; }
-.font-btn { width:30px; height:30px; background:#555; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 0 #333; transition:0.1s; user-select:none; }
-.font-btn:active { transform: translateY(4px); box-shadow:0 0px 0 #333; }
+  .slot-label {
+    position: absolute;
+    bottom: -20px;
+    font-size: 13px;
+    color: #333;
+    text-align: center;
+    width: 100%;
+  }
 
-/* Stand visual */
-.stand-visual { width:100px; height:40px; background:#888; margin:10px auto 0 auto; border-radius:10px; transition: transform 0.05s linear; user-select:none; }
+  /* 카드 */
+  .card {
+    width: 100px;
+    height: 30px;
+    background: linear-gradient(135deg, #b2b2b2, #e0e0e0);
+    border-radius: 6px;
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: bottom 0.5s;
+  }
 
-/* 도움 버튼 */
-#help-btn { background:#007BFF; color:white; border:none; border-radius:8px; padding:6px 10px; cursor:pointer; font-weight:bold; box-shadow:0 3px 6px rgba(0,0,0,0.3); transition:0.2s;}
-#help-btn:hover { background:#3399FF; }
+  .card.inserted {
+    bottom: 5px;
+  }
+
+  /* 영수증 */
+  .receipt {
+    width: 60px;
+    height: 0;
+    background: #444;
+    border-radius: 3px;
+    position: absolute;
+    bottom: 0;
+    transition: height 1s;
+  }
+
+  .receipt.out {
+    height: 70px;
+  }
+
+  /* 버튼 스타일 */
+  .control-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .control-btn button {
+    background: #999;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .control-btn button:hover {
+    background: #777;
+  }
+
 </style>
 </head>
 <body>
-
-<div class="kiosk-container">
-  <div class="stand" id="stand">
-    <!-- Top -->
+  <div class="kiosk">
     <div class="top-bar">
-      <button id="language-btn">🌐 언어</button>
-      <div style="display:flex; gap:5px; align-items:center;">
-        <div class="font-controls">
-          <button class="font-btn" id="font-up">+</button>
-          <button class="font-btn" id="font-down">-</button>
-        </div>
-        <button id="help-btn">도움</button>
+      <span>대기중</span>
+      <div>
+        <button id="langBtn">Language</button>
+        <button id="fontMinus">A−</button>
+        <button id="fontPlus">A+</button>
       </div>
     </div>
+    <button class="help-btn">도움 요청</button>
 
-    <!-- Main Screen -->
-    <div class="main-screen">
-      <div class="tile">메뉴 1</div>
-      <div class="tile">메뉴 2</div>
-      <div class="tile">메뉴 3</div>
-      <div class="tile">메뉴 4</div>
-      <div class="tile">메뉴 5</div>
-      <div class="tile">메뉴 6</div>
+    <div class="screen">
+      <div class="menu">
+        <button>버거</button>
+        <button>감자튀김</button>
+        <button>콜라</button>
+        <button>치킨너겟</button>
+        <button>커피</button>
+      </div>
+      <div class="cart" id="cart"></div>
     </div>
 
-    <!-- Bottom Frame -->
-    <div class="bottom-frame">
-      <div class="selected-items" id="selected-items">선택한 메뉴 없음</div>
-      <div class="bottom-buttons">
-        <div class="card-slot" id="card-slot">카드
-          <div class="card-insert" id="card-insert"></div>
-        </div>
-        <div class="qr-reader" id="qr-reader">QR</div>
-        <div class="receipt-slot" id="receipt-slot">영수증
-          <div class="receipt-insert" id="receipt-insert"></div>
-        </div>
-        <div class="height-controls">
-          <div class="height-btn" id="height-up">▲</div>
-          <div class="height-btn" id="height
+    <div class="bottom-panel">
+      <div class="slot card-slot">
+        <div class="card" id="card"></div>
+        <div class="slot-label">카드 결제</div>
+      </div>
+
+      <div class="slot qr-slot">
+        <div class="slot-label">QR 쿠폰</div>
+      </div>
+
+      <div class="slot receipt-slot">
+        <div class="receipt" id="receipt"></div>
+        <div class="slot-label">영수증 출력</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="control-btn">
+    <button id="upBtn">▲</button>
+    <button id="downBtn">▼</button>
+  </div>
+
+<script>
+  const menuBtns = document.querySelectorAll(".menu button");
+  const cart = document.getElementById("cart");
+  const card = document.getElementById("card");
+  const receipt = document.getElementById("receipt");
+  const kiosk = document.querySelector(".kiosk");
+
+  // 장바구니 추가 & 삭제
+  menuBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const item = document.createElement("div");
+      item.textContent = btn.textContent;
+      item.style.cursor = "pointer";
+      item.addEventListener("click", () => item.remove());
+      cart.appendChild(item);
+    });
+  });
+
+  // 카드 삽입/제거
+  card.addEventListener("click", () => {
+    card.classList.toggle("inserted");
+  });
+
+  // 영수증 출력
+  const receiptSlot = document.querySelector(".receipt-slot");
+  receiptSlot.addEventListener("click", () => {
+    receipt.classList.add("out");
+    setTimeout(() => receipt.classList.remove("out"), 2000);
+  });
+
+  // 글자 크기 조절
+  let fontSize = 14;
+  document.getElementById("fontPlus").onclick = () => {
+    if (fontSize < 22) fontSize += 2;
+    document.body.style.fontSize = fontSize + "px";
+  };
+  document.getElementById("fontMinus").onclick = () => {
+    if (fontSize > 10) fontSize -= 2;
+    document.body.style.fontSize = fontSize + "px";
+  };
+
+  // 높이 조절
+  let height = 900;
+  document.getElementById("upBtn").onmousedown = () => moveHeight(1);
+  document.getElementById("downBtn").onmousedown = () => moveHeight(-1);
+  let heightInterval;
+  function moveHeight(direction) {
+    clearInterval(heightInterval);
+    heightInterval = setInterval(() => {
+      height += direction * 2;
+      if (height < 700) height = 700;
+      if (height > 1000) height = 1000;
+      kiosk.style.height = height + "px";
+    }, 20);
+  }
+  document.addEventListener("mouseup", () => clearInterval(heightInterval));
+</script>
+</body>
+</html>

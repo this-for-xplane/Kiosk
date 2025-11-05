@@ -27,7 +27,7 @@ body {
   display:flex;
   flex-direction:column;
   transform:translateY(0);
-  transition:transform 0.05s linear;
+  transition:transform 0.1s linear;
 }
 
 /* 상단 바 */
@@ -263,6 +263,31 @@ body {
   cursor:pointer;
 }
 #welcome-overlay p { font-size:15px; margin-top:10px; opacity:0.9; }
+
+/* 🔼🔽 높이 조절 버튼 */
+.height-controls {
+  position:absolute;
+  right:-50px;
+  bottom:100px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.height-controls button {
+  width:45px;
+  height:45px;
+  background:#444;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-size:20px;
+  cursor:pointer;
+  box-shadow:0 3px 6px rgba(0,0,0,0.3);
+  transition:0.2s;
+}
+.height-controls button:hover {
+  background:#666;
+}
 </style>
 </head>
 <body>
@@ -300,6 +325,12 @@ body {
     </div>
   </div>
 
+  <!-- 🔼🔽 높이 조절 버튼 -->
+  <div class="height-controls">
+    <button id="upBtn">🔼</button>
+    <button id="downBtn">🔽</button>
+  </div>
+
   <div id="welcome-overlay">
     환영합니다
     <p>화면을 터치하여 시작하세요</p>
@@ -315,7 +346,11 @@ const cardInsert = document.getElementById('card-insert');
 const receiptInsert = document.getElementById('receipt-insert');
 const paymentDisplay = document.getElementById('payment-display');
 const welcomeOverlay = document.getElementById('welcome-overlay');
+const stand = document.getElementById('stand');
+const upBtn = document.getElementById('upBtn');
+const downBtn = document.getElementById('downBtn');
 let cardInserted = false;
+let currentY = 0;
 
 // 메뉴 선택
 tiles.forEach(tile=>{
@@ -329,7 +364,6 @@ tiles.forEach(tile=>{
     tag.style.border="1px solid #ccc";
     tag.style.cursor="pointer";
 
-    // 🔹 클릭 시 삭제
     tag.addEventListener('click', ()=>{
       tag.remove();
       if(selectedItems.children.length === 0) {
@@ -382,6 +416,16 @@ document.getElementById('help-btn').addEventListener('click',()=>alert("도움�
 
 // 환영화면 클릭시 시작
 welcomeOverlay.addEventListener('click',()=>{ welcomeOverlay.style.display='none'; });
+
+// 🔼🔽 높이 조절 버튼 기능
+upBtn.addEventListener('click', () => {
+  currentY -= 20;
+  stand.style.transform = `translateY(${currentY}px)`;
+});
+downBtn.addEventListener('click', () => {
+  currentY += 20;
+  stand.style.transform = `translateY(${currentY}px)`;
+});
 </script>
 
 </body>
